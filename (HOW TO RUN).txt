@@ -1,0 +1,15 @@
+1) Simply install nodejs, ganache, and mongoDB community edition.
+
+2) Open three terminal windows and head to the folder where you extracted the project files in both instances of terminal.
+
+3) On one instance of terminal, cd into blockchain-project and on the other, cd into blockchain-project-backend.
+
+4) In both terminal instances, type npm install (which will install all dependencies) and hit enter.
+
+5) After npm install has finished, type nodemon server in the window where you are inside of the blockchain-project-backend folder and hit enter.
+
+6) In the window where you are inside of the blockchain-project folder, type npm start and hit enter.
+
+7) Now you will see my site! 
+
+8) Profit???

@@ -1,0 +1,27 @@
+{
+  "name": "end-to-end-tutorial",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --timeout 10000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dsarlo/end-to-end-tutorial.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dsarlo/end-to-end-tutorial/issues"
+  },
+  "homepage": "https://github.com/dsarlo/end-to-end-tutorial#readme",
+  "dependencies": {
+    "fs-extra": "^7.0.1",
+    "ganache-cli": "^6.4.3",
+    "mocha": "^5.2.0",
+    "solc": "^0.4.25",
+    "truffle-hdwallet-provider": "^1.0.6",
+    "web3": "^1.0.0-beta.34"
+  }
+}
