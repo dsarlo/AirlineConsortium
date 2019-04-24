@@ -4,6 +4,9 @@ import axios from 'axios';
 import {withRouter} from 'react-router-dom';
 import './flights-list.component.css';
 
+import web3 from "../web3";
+import airlineConsortium from "../airlineConsortium";
+
 const FlightAction = (props) => {
     var userCanChangeToThisFlight = props.currentBookedFlightId !== props.flight._id && props.currentBookedFlightId;
   
@@ -47,7 +50,12 @@ class FlightsList extends Component {
         });
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        const accounts = await web3.eth.getAccounts();
+        const balance = await airlineConsortium.methods.balanceOf(accounts[0]).call();
+
+        this.setState({ balance });
+
         this.reloadFlightList();
     }
 
@@ -65,7 +73,7 @@ class FlightsList extends Component {
     render() {
         return (
             <div>
-                <h3 style={{ marginTop: 20 }}>Flights List</h3>
+                <h3 style={{ marginTop: 20 }}>Flights List {this.state.balance}</h3>
                 <table className="table table-striped" style={{ marginTop: 20 }}>
                     <thead>
                         <tr>
