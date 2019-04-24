@@ -1,6 +1,21 @@
-pragma solidity ^0.5.6;
+pragma solidity ^0.4.24;
 
-contract Contract {
+contract AirlineConsortium {
+
+    //Start old contract (For tests)
+    mapping (address => uint256) public balanceOf;
+
+    constructor (uint256 initialSupply) public {
+        balanceOf[msg.sender] = initialSupply;
+    }
+
+    function transfer(address _to, uint256 _value) public {
+        require(balanceOf[msg.sender] >= _value);
+        require(balanceOf[_to] + _value >= balanceOf[_to]);
+        balanceOf[msg.sender] -= _value;
+        balanceOf[_to] += _value;
+    }
+    //End old contract
     
     mapping (address => uint) userBalances;
     mapping (address => bool) userAccounts;

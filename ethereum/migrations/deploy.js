@@ -1,6 +1,6 @@
 const Provider = require("truffle-hdwallet-provider");
 const Web3 = require("web3");
-const { interface, bytecode } = require("../build/Token");
+const { interface, bytecode } = require("../build/AirlineConsortium");
 
 const provider = new Provider(
   "cargo jaguar float step gauge sister marine car wire barrel leopard pencil",

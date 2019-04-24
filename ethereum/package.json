@@ -1,5 +1,5 @@
 {
-  "name": "end-to-end-tutorial",
+  "name": "AirlineConsortium",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dsarlo/end-to-end-tutorial.git"
+    "url": "git+https://github.com/dsarlo/AirlineConsortium.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/dsarlo/end-to-end-tutorial/issues"
+    "url": "https://github.com/dsarlo/AirlineConsortium/issues"
   },
-  "homepage": "https://github.com/dsarlo/end-to-end-tutorial#readme",
+  "homepage": "https://github.com/dsarlo/AirlineConsortium#readme",
   "dependencies": {
     "fs-extra": "^7.0.1",
     "ganache-cli": "^6.4.3",
