@@ -6,9 +6,7 @@ import {withRouter} from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap.min.css"
 import './App.css';
 
-import CreateItem from "./components/create-item.component";
-import EditItem from "./components/edit-item.component";
-import ItemsList from "./components/items-list.component";
+import FlightsList from "./components/flights-list.component";
 import Register from "./components/register.component";
 import Login from "./components/login.component";
 
@@ -22,18 +20,20 @@ class App extends Component {
     }
   }
 
-  signIn(username, first_name, last_name, balance) {
+  signIn(username, first_name, last_name, balance, booked_flight) {
     this.setState({user: {
       first_name,
       last_name,
       username,
-      balance
+      balance,
+      booked_flight
     }});
 
     console.log(first_name);
     console.log(username);
     console.log(last_name);
     console.log(balance);
+    console.log(booked_flight);
   }
   
   //Sign out button clicked event
@@ -53,12 +53,13 @@ class App extends Component {
 
   isAuthenticated = () => !!this.state.user;
 
-  //This is used as a callback for when an item is bought
+  //This is used as a callback for when an flight is booked
   //so that the current user identity can be updated from
-  //the child componenet items-list
-  onItemBought(item_id, item_price) {
+  //the child componenet flights-list
+  onFlightBooked(flight_id, flight_cost) {
     let currentUser = Object.assign({}, this.state.user);
-    currentUser.balance -= item_price;
+    currentUser.balance -= flight_cost;
+    currentUser.booked_flight = flight_id;
 
     this.setState({
         user: currentUser
@@ -68,14 +69,14 @@ class App extends Component {
         axios.post("http://localhost:4000/user/updateBalance/" + this.state.user.username, this.state.user)
         .then(res => console.log(res.data));
 
-        //Delete purchased item in db
-        axios.delete('http://localhost:4000/items/bought/' + item_id)
+        //Delete purchased flight in db
+        /*axios.delete('http://localhost:4000/flights/booked/' + flight_id)
         .then(res => {
-            console.log("Item successfully purchased!");
+            console.log("Flight successfully booked!");
         })
         .catch(function(error) {
             console.log(error);
-        });
+        });*/
     });
 }
 
@@ -83,28 +84,25 @@ class App extends Component {
     return (
       <div className="container-fluid">
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark" style={{ width: '100%' }}>
-          <a className="navbar-brand" href="/">Blockchain (CSE 426)</a>
+          <a className="navbar-brand" href="/">ASK Blockchain (CSE 426)</a>
           <div className="collapse navbar-collapse">
             <ul className="navbar-nav mr-auto">
-              { this.isAuthenticated(this.state.user) && <li className="navbar-item">
-                <Link to="/items" className="nav-link">Items</Link>
+              { this.isAuthenticated() && <li className="navbar-item">
+                <Link to="/flights" className="nav-link">Flights</Link>
               </li> }
-              { this.isAuthenticated(this.state.user) && <li className="navbar-item">
-                <Link to="/create" className="nav-link">Create Item</Link>
-              </li> }
-              { this.isAuthenticated(this.state.user) && <li className="navbar-item">
+              { this.isAuthenticated() && <li className="navbar-item">
                 <button className="nav-link nav-button" onClick={() => this.signOut()}>Sign Out</button>
               </li> }
-              { !this.isAuthenticated(this.state.user) && <li className="navbar-item">
+              { !this.isAuthenticated() && <li className="navbar-item">
                 <Link to="/" className="nav-link">Sign In</Link>
               </li> }
-              { !this.isAuthenticated(this.state.user) && <li className="navbar-item">
+              { !this.isAuthenticated() && <li className="navbar-item">
                 <Link to="/register" className="nav-link">Register</Link>
               </li> }
             </ul>
 
             <ul className="navbar-nav ml-auto">
-              { this.isAuthenticated(this.state.user) && <li className="navbar-item">
+              { this.isAuthenticated() && <li className="navbar-item">
                 <button className="nav-link nav-button">{
                   this.state.user.first_name + " " + this.state.user.last_name + 
                   " | Balance: " + this.state.user.balance
@@ -115,11 +113,9 @@ class App extends Component {
           </div>
         </nav>
 
-        { !this.isAuthenticated(this.state.user) && <Route path="/" exact render={this.LoginPage}/> }
-        { !this.isAuthenticated(this.state.user) && <Route path="/register" component={Register}/> }
-        { this.isAuthenticated(this.state.user) && <Route path="/items" render={(props) => <ItemsList {...props} userData={this.state.user} onItemBought={this.onItemBought.bind(this)} />}/> }
-        { this.isAuthenticated(this.state.user) && <Route path="/edit/:id" render={(props) => <EditItem {...props} userData={this.state.user} />}/> }
-        { this.isAuthenticated(this.state.user) && <Route path="/create" render={(props) => <CreateItem {...props} userData={this.state.user} />} /> }
+        { !this.isAuthenticated() && <Route path="/" exact render={this.LoginPage}/> }
+        { !this.isAuthenticated() && <Route path="/register" component={Register}/> }
+        { this.isAuthenticated() && <Route path="/flights" render={(props) => <FlightsList {...props} userData={this.state.user} onFlightBooked={this.onFlightBooked.bind(this)} currentBookedFlightId={this.state.user.booked_flight} />}/> }
       </div>
     );
   }

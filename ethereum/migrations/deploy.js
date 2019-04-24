@@ -3,8 +3,8 @@ const Web3 = require("web3");
 const { interface, bytecode } = require("../build/Token");
 
 const provider = new Provider(
-  "pepper stable ripple enrich provide business ankle tank net lumber acquire earn",
-  "https://rinkeby.infura.io/DPHGLx2mBJeWsuDv1jFV"
+  "cargo jaguar float step gauge sister marine car wire barrel leopard pencil",
+  "https://rinkeby.infura.io/v3/48f1c230054a498d84299c6c3db213fd"
 );
 
 const web3 = new Web3(provider);

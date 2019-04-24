@@ -16,6 +16,9 @@ let User = new Schema({
     },
     balance: {
         type: Number
+    },
+    booked_flight: {
+        type: String
     }
 });
 

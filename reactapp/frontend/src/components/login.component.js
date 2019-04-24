@@ -22,8 +22,8 @@ class Login extends Component {
 
         axios.get('http://localhost:4000/user/login/' + this.state.username + "/" + this.state.password)
         .then(res => {
-            this.props.onSignIn(res.data.username, res.data.first_name, res.data.last_name, res.data.balance);
-            this.props.history.push("/items");
+            this.props.onSignIn(res.data.username, res.data.first_name, res.data.last_name, res.data.balance, res.data.booked_flight);
+            this.props.history.push("/flights");
         })
         .catch(function(error) {
             console.log(error);
