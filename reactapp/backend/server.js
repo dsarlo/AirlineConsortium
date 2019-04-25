@@ -47,6 +47,18 @@ flightRoutes.route('/:id').get(function(req, res) {
     });
 });
 
+//Post request at "/flights/add"
+flightRoutes.route('/add').post(function(req, res) {
+    let flight = new Flight(req.body);
+
+    flight.save().then(flight => {
+        res.status(200).json({'flight': 'flight added successfully'});
+    })
+    .catch(err => {
+        res.status(400).send('adding new flight failed');
+    });
+});
+
 //Post request for UPDATE at "/user/updateBalance/:username"
 userRoutes.route('/updateBalance/:username').post(function(req, res) {
     let user = new User(req.body);
