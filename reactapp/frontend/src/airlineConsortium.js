@@ -1,6 +1,6 @@
 import web3 from "./web3";
 
-const ADDRESS = "0xb2f329f7E9a2851868a0A528bbc7750724C5819A"; //Update with the address at which the contract was deployed!
+const ADDRESS = "0xd207625e0FFE9AaA23B9484156A748496495D2c2"; //Update with the address at which the contract was deployed!
 const ABI = [
   {
     "constant": true,

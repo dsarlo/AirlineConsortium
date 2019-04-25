@@ -67,14 +67,14 @@ class Register extends Component {
     async onSubmit(event) {
         event.preventDefault();
 
-        //CHANGE THIS TO REGISTER!
         const accounts = await web3.eth.getAccounts();
 
         //register the user
-        await airlineConsortium.methods.register(this.state.is_airline).call();
+        await airlineConsortium.methods.register(this.state.is_airline).send({ from: accounts[0] });
+
         console.log(this.state.is_airline);
         
-        const initialOfferingBalance = await airlineConsortium.methods.airlineBalances(accounts[0]).call();
+        const initialOfferingBalance = this.state.is_airline ? await airlineConsortium.methods.airlineBalances(accounts[0]).call() : await airlineConsortium.methods.userBalances(accounts[0]).call();
         console.log(initialOfferingBalance);
 
         const newUser = {
@@ -83,7 +83,8 @@ class Register extends Component {
             balance: initialOfferingBalance,
             first_name: this.state.first_name,
             last_name: this.state.last_name,
-            is_airline: this.state.is_airline
+            is_airline: this.state.is_airline,
+            sc_address: accounts[0]
         }
 
         axios.post("http://localhost:4000/user/registerUser", newUser)
