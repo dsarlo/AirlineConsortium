@@ -138,7 +138,7 @@ class App extends Component {
             .then(res => console.log(res.data));
           });
 
-          if(originalAirlineAddress == newAirlineAddress) {
+          if(originalAirlineAddress === newAirlineAddress) {
             const updatedOriginalAirlineBalance = await airlineConsortium.methods.airlineBalances(originalAirlineAddress).call();
 
             //Update airline balance...
@@ -166,7 +166,6 @@ class App extends Component {
             axios.post("http://localhost:4000/user/updateBalance/" + newAirlineUser.username, newAirlineUser)
             .then(res => console.log(res.data));
           }
-
         })
         .catch(function(error) {
           console.log(error);
