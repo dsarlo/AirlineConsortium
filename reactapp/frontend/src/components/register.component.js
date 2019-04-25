@@ -69,7 +69,13 @@ class Register extends Component {
 
         //CHANGE THIS TO REGISTER!
         const accounts = await web3.eth.getAccounts();
-        const initialOfferingBalance = await airlineConsortium.methods.balanceOf(accounts[0]).call();
+
+        //register the user
+        await airlineConsortium.methods.register(this.state.is_airline).call();
+        console.log(this.state.is_airline);
+        
+        const initialOfferingBalance = await airlineConsortium.methods.airlineBalances(accounts[0]).call();
+        console.log(initialOfferingBalance);
 
         const newUser = {
             username: this.state.username,

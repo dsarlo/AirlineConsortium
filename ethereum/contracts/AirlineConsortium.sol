@@ -17,10 +17,10 @@ contract AirlineConsortium {
     }
     //End old contract
     
-    mapping (address => uint) userBalances;
+    mapping (address => uint) public userBalances;
     mapping (address => bool) userAccounts;
 
-    mapping (address => uint) airlineBalances;
+    mapping (address => uint) public airlineBalances;
     mapping (address => bool) airlineAccounts;
     
     //Chairperson is initialized as the creator of the smart contract
