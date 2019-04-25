@@ -61,7 +61,7 @@ class Register extends Component {
     }
 
     onRegisterAsAirlineChanged() {
-        this.setState({is_airline: !this.state.is_airline});
+        this.setState({is_airline: !this.state.is_airline, last_name: ''});
     }
 
     async onSubmit(event) {
