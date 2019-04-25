@@ -65,24 +65,24 @@ userRoutes.route('/updateBalance/:username').post(function(req, res) {
     let username = user.username;
 
     User.findOne({username: username}, function(err, lookup) {
-            if(err) {
+        if(err) {
+            console.log(err);
+        }
+        if(lookup) {
+            user.password = lookup.password;
+            user.save().then(() => {
+                res.json('User balance updated successfully');
+                lookup.delete();
+            })
+            .catch(err => {
+                res.status(400).send('Balance update not possible');
                 console.log(err);
-            }
-            if(lookup) {
-                user.password = lookup.password;
-                user.save().then(() => {
-                    res.json('User balance updated successfully');
-                    lookup.delete();
-                })
-                .catch(err => {
-                    res.status(400).send('Balance update not possible');
-                    console.log(err);
-                });
-            } else {
-                console.log("User not found");
-                res.status(400).send("User not found");
-            }
-        });
+            });
+        } else {
+            console.log("User not found");
+            res.status(400).send("User not found");
+        }
+    });
 });
 
 //Post request for REGISTER at "/user/registerUser"
@@ -139,6 +139,24 @@ userRoutes.route('/login/:user/:pass').get(function(req, res) {
             }
         } else {
             res.status(404).send("Invalid login info");
+        }
+    });
+});
+
+//Get request for AIRLINE LOOKUP at "/user/:organizationName"
+userRoutes.route('/airlines/:organizationName').get(function(req, res) {
+    let organizationName = req.params.organizationName;
+    console.log(req.params);
+
+    User.findOne({first_name: organizationName}, function(err, lookup) {
+        if(err) {
+            console.log(err);
+        }
+        if(lookup) {
+            console.log(lookup);
+            res.json(lookup);
+        } else {
+            res.status(404).send("Organization name not found!");
         }
     });
 });

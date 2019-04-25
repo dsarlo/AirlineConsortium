@@ -62,12 +62,12 @@ class App extends Component {
 
   //This is used as a callback for when an flight is booked
   //so that the current user identity can be updated from
-  //the child componenet flights-list
-  onFlightBooked(flight_id, flight_cost) {
+  //the child component flights-list
+  onFlightBooked(flight_id, flight_cost, flight_airline) {
 
-    axios.get('http://localhost:4000/flights/' + flight_id)
-    .then(async res => {
-      const airlineAddress = res.data.sc_address;
+    axios.get('http://localhost:4000/airlines/' + flight_airline)
+    .then(async airlineData => {
+      const airlineAddress = airlineData.data.sc_address;
 
       const accounts = await web3.eth.getAccounts();
 
@@ -93,7 +93,93 @@ class App extends Component {
     .catch(function(error) {
         console.log(error);
     });
-}
+  }
+
+  //This is used as a callback for when a flight change is requested by the user
+  //so that the current user identity can be updated from
+  //the child component flights-list
+  onFlightChanged(newFlightId, newFlightCost, newFlightAirline) {
+    let originalFlightId = this.state.user.booked_flight; //Use original flight id to get the sc_address for that airline
+
+    axios.get('http://localhost:4000/flights/' + originalFlightId)
+    .then(async originalFlightLookupResponse => {//Get the airline name and the flight cost for the original flight
+      let originalAirline = originalFlightLookupResponse.data.flight_airline;
+      let originalFlightCost = originalFlightLookupResponse.data.flight_cost;
+      
+      axios.get('http://localhost:4000/airlines/' + originalAirline)
+      .then(async originalAirlineData => {//Get the original airline's sc address
+        let originalAirlineUser = Object.assign({}, originalAirlineData.data);
+        const originalAirlineAddress = originalAirlineData.data.sc_address;
+        
+        axios.get('http://localhost:4000/airlines/' + newFlightAirline)
+        .then(async newAirlineData => {//Get the new airline's sc address
+          let newAirlineUser = Object.assign({}, newAirlineData.data);
+          const newAirlineAddress = newAirlineData.data.sc_address;
+          
+          const accounts = await web3.eth.getAccounts();
+
+          //Request to change flight
+          await airlineConsortium.methods.requestFlightChange(originalAirlineAddress, newAirlineAddress, originalFlightCost, newFlightCost).send({ from: accounts[0] });
+      
+          const updatedUserBalance = await airlineConsortium.methods.userBalances(accounts[0]).call();
+          console.log(updatedUserBalance);
+
+          //Update the current user's balance...
+          let currentUser = Object.assign({}, this.state.user);
+          currentUser.balance = updatedUserBalance;
+          currentUser.booked_flight = newFlightId;
+
+          this.setState({
+            user: currentUser
+          }, function() {
+            console.log(this.state.user.balance);
+            //Update user balance in db
+            axios.post("http://localhost:4000/user/updateBalance/" + this.state.user.username, this.state.user)
+            .then(res => console.log(res.data));
+          });
+
+          if(originalAirlineAddress == newAirlineAddress) {
+            const updatedOriginalAirlineBalance = await airlineConsortium.methods.airlineBalances(originalAirlineAddress).call();
+
+            //Update airline balance...
+            originalAirlineUser.balance = updatedOriginalAirlineBalance;
+
+            //Update airline balance in db
+            axios.post("http://localhost:4000/user/updateBalance/" + originalAirlineUser.username, originalAirlineUser)
+            .then(res => console.log(res.data));
+
+          } else {
+            const updatedOriginalAirlineBalance = await airlineConsortium.methods.airlineBalances(originalAirlineAddress).call();
+            const updatedNewAirlineBalance = await airlineConsortium.methods.airlineBalances(newAirlineAddress).call();
+
+            //Update airline A balance...
+            originalAirlineUser.balance = updatedOriginalAirlineBalance;
+
+            //Update airline A balance in db
+            axios.post("http://localhost:4000/user/updateBalance/" + originalAirlineUser.username, originalAirlineUser)
+            .then(res => console.log(res.data));
+
+            //Update airline B balance...
+            newAirlineUser.balance = updatedNewAirlineBalance;
+
+            //Update airline B balance in db
+            axios.post("http://localhost:4000/user/updateBalance/" + newAirlineUser.username, newAirlineUser)
+            .then(res => console.log(res.data));
+          }
+
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+    })
+    .catch(function(error) {
+      console.log(error);
+    });
+  }
 
   render() {
     return (
@@ -133,7 +219,7 @@ class App extends Component {
 
         { !this.isAuthenticated() && <Route path="/" exact render={this.LoginPage}/> }
         { !this.isAuthenticated() && <Route path="/register" component={Register}/> }
-        { this.isAuthenticated() && <Route path="/flights" render={(props) => <FlightsList {...props} userData={this.state.user} onFlightBooked={this.onFlightBooked.bind(this)} />}/> }
+        { this.isAuthenticated() && <Route path="/flights" render={(props) => <FlightsList {...props} userData={this.state.user} onFlightBooked={this.onFlightBooked.bind(this)} onFlightChanged={this.onFlightChanged.bind(this)} />}/> }
         { this.isAuthenticated() && this.isAirline() && <Route path="/create" render={(props) => <CreateFlight {...props} userData={this.state.user} />} /> }
       </div>
     );

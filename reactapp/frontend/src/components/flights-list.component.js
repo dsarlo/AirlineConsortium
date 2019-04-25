@@ -12,10 +12,10 @@ const FlightAction = (props) => {
     }
 
     if (!props.userData.booked_flight) {
-      return <button className="link-button" onClick={() => props.onBookFlightClicked(props.flight._id, props.flight.flight_cost)}>Book Flight</button>;
+      return <button className="link-button" onClick={() => props.onBookFlightClicked(props.flight._id, props.flight.flight_cost, props.flight.flight_airline)}>Book Flight</button>;
     }
     else if (userCanChangeToThisFlight) {
-      return <Link to={ "/edit/" + props.flight._id }>Change Flight</Link>;
+      return <button className="link-button" onClick={() => props.onChangeFlightClicked(props.flight._id, props.flight.flight_cost, props.flight.flight_airline)}>Change Flight</button>;
     }
   };
 
@@ -62,7 +62,7 @@ class FlightsList extends Component {
 
     flightList() {
         return this.state.flights.map((currentFlight, i) => {
-            return <Flight flight={currentFlight} key={i} onBookFlightClicked={this.props.onFlightBooked} userData={this.props.userData} />;
+            return <Flight flight={currentFlight} key={i} onBookFlightClicked={this.props.onFlightBooked} onChangeFlightClicked={this.props.onFlightChanged} userData={this.props.userData} />;
         });
     }
 
