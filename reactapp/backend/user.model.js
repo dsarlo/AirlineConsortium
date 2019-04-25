@@ -22,6 +22,9 @@ let User = new Schema({
     },
     is_airline: {
         type: Boolean
+    },
+    sc_address: {
+        type: String
     }
 });
 

@@ -60,47 +60,39 @@ class App extends Component {
   isAuthenticated = () => !!this.state.user;
   isAirline = () => this.state.user.is_airline;
 
-  transfer = async (flight_cost) => {
-    try {
-      const accounts = await web3.eth.getAccounts();
-      const tx = await airlineConsortium.methods
-        .transfer("0x9E9D31c0af5dbB3D3719b311E3c643D233923EF9", flight_cost)
-        .send({ from: accounts[0] });
-
-      const balance = await airlineConsortium.methods.balanceOf(accounts[0]).call();
-
-    } catch (error) {
-    }
-  };
-
   //This is used as a callback for when an flight is booked
   //so that the current user identity can be updated from
   //the child componenet flights-list
   onFlightBooked(flight_id, flight_cost) {
 
-    this.transfer(flight_cost);
-    /*
-    let currentUser = Object.assign({}, this.state.user);
-    currentUser.balance -= flight_cost;
-    currentUser.booked_flight = flight_id;
+    axios.get('http://localhost:4000/flights/' + flight_id)
+    .then(async res => {
+      const airlineAddress = res.data.sc_address;
 
-    this.setState({
+      const accounts = await web3.eth.getAccounts();
+
+      //Book flight with airline of choice
+      await airlineConsortium.methods.bookFlight(airlineAddress, flight_cost).send({ from: accounts[0] });
+      
+      const updatedUserBalance = await airlineConsortium.methods.userBalances(accounts[0]).call();
+      console.log(updatedUserBalance);
+
+      let currentUser = Object.assign({}, this.state.user);
+      currentUser.balance = updatedUserBalance;
+      currentUser.booked_flight = flight_id;
+
+      this.setState({
         user: currentUser
-    }, function() {
+      }, function() {
         console.log(this.state.user.balance);
         //Update user balance in db
         axios.post("http://localhost:4000/user/updateBalance/" + this.state.user.username, this.state.user)
         .then(res => console.log(res.data));
-
-        //Delete purchased flight in db
-        /*axios.delete('http://localhost:4000/flights/booked/' + flight_id)
-        .then(res => {
-            console.log("Flight successfully booked!");
-        })
-        .catch(function(error) {
-            console.log(error);
-        });
-    });*/
+      });
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
 }
 
   render() {

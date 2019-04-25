@@ -97,7 +97,8 @@ userRoutes.route('/registerUser').post(function(req, res) {
             balance: user.balance,
             first_name: user.first_name,
             last_name: user.last_name,
-            is_airline: user.is_airline
+            is_airline: user.is_airline,
+            sc_address: user.sc_address
         });
 
         User.findOne({username: username}, function(err, lookup) {
