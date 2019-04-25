@@ -11,7 +11,7 @@ let Flight = new Schema({
     flight_airline: {
         type: String
     },
-    flight_board_time: {
+    flight_departure: {
         type: Date
     },
     flight_cost: {

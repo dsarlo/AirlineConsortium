@@ -4,13 +4,14 @@ import axios from 'axios';
 import {withRouter} from 'react-router-dom';
 import './flights-list.component.css';
 
-import web3 from "../web3";
-import airlineConsortium from "../airlineConsortium";
-
 const FlightAction = (props) => {
-    var userCanChangeToThisFlight = props.currentBookedFlightId !== props.flight._id && props.currentBookedFlightId;
-  
-    if (!props.currentBookedFlightId) {
+    var userCanChangeToThisFlight = props.userData.booked_flight !== props.flight._id && props.userData.booked_flight;
+    
+    if(props.userData.is_airline) {
+        return null;
+    }
+
+    if (!props.userData.booked_flight) {
       return <button className="link-button" onClick={() => props.onBookFlightClicked(props.flight._id, props.flight.flight_cost)}>Book Flight</button>;
     }
     else if (userCanChangeToThisFlight) {
@@ -20,11 +21,11 @@ const FlightAction = (props) => {
 
 const Flight = props => (
     <tr>
-        <td>{new Date(props.flight.flight_board_time).toLocaleDateString()}</td>
+        <td>{new Date(props.flight.flight_departure).toLocaleDateString()}</td>
         <td>{props.flight.flight_airline}</td>
         <td>{props.flight.flight_origin}</td>
         <td>{props.flight.flight_destination}</td>
-        <td>{new Date(props.flight.flight_board_time).toLocaleTimeString()}</td>
+        <td>{new Date(props.flight.flight_departure).toLocaleTimeString()}</td>
         <td>{props.flight.flight_cost}</td>
         <td>
             { FlightAction(props) }
@@ -50,12 +51,7 @@ class FlightsList extends Component {
         });
     }
 
-    async componentDidMount() {
-        const accounts = await web3.eth.getAccounts();
-        const balance = await airlineConsortium.methods.balanceOf(accounts[0]).call();
-
-        this.setState({ balance });
-
+    componentDidMount() {
         this.reloadFlightList();
     }
 
@@ -66,14 +62,14 @@ class FlightsList extends Component {
 
     flightList() {
         return this.state.flights.map((currentFlight, i) => {
-            return <Flight flight={currentFlight} key={i} onBookFlightClicked={this.props.onFlightBooked} currentBookedFlightId={this.props.currentBookedFlightId} />;
+            return <Flight flight={currentFlight} key={i} onBookFlightClicked={this.props.onFlightBooked} userData={this.props.userData} />;
         });
     }
 
     render() {
         return (
             <div>
-                <h3 style={{ marginTop: 20 }}>Flights List {this.state.balance}</h3>
+                <h3 style={{ marginTop: 20 }}>Flights List</h3>
                 <table className="table table-striped" style={{ marginTop: 20 }}>
                     <thead>
                         <tr>
@@ -83,7 +79,7 @@ class FlightsList extends Component {
                             <th>Destination</th>
                             <th>Departure Time</th>
                             <th>Price</th>
-                            <th>Action</th>
+                            { !this.props.userData.is_airline && <th>Action</th> }
                         </tr>
                     </thead>
                     <tbody>

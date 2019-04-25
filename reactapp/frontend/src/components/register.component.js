@@ -3,6 +3,9 @@ import axios from 'axios';
 import {withRouter} from 'react-router-dom';
 import './register.component.css';
 
+import web3 from "../web3";
+import airlineConsortium from "../airlineConsortium";
+
 class Register extends Component {
 
     constructor(props) {
@@ -14,6 +17,7 @@ class Register extends Component {
         this.onUsernameChanged = this.onUsernameChanged.bind(this);
         this.onPasswordChanged = this.onPasswordChanged.bind(this);
         this.onConfirmPassChanged = this.onConfirmPassChanged.bind(this);
+        this.onRegisterAsAirlineChanged = this.onRegisterAsAirlineChanged.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
 
         this.state = {
@@ -21,7 +25,8 @@ class Register extends Component {
             password: '',
             confirmedPass: '',
             first_name: '',
-            last_name: ''
+            last_name: '',
+            is_airline: false
         }
     }
 
@@ -55,15 +60,24 @@ class Register extends Component {
         });
     }
 
-    onSubmit(event) {
+    onRegisterAsAirlineChanged() {
+        this.setState({is_airline: !this.state.is_airline});
+    }
+
+    async onSubmit(event) {
         event.preventDefault();
+
+        //CHANGE THIS TO REGISTER!
+        const accounts = await web3.eth.getAccounts();
+        const initialOfferingBalance = await airlineConsortium.methods.balanceOf(accounts[0]).call();
 
         const newUser = {
             username: this.state.username,
             password: this.state.password,
-            balance: 500,
+            balance: initialOfferingBalance,
             first_name: this.state.first_name,
-            last_name: this.state.last_name
+            last_name: this.state.last_name,
+            is_airline: this.state.is_airline
         }
 
         axios.post("http://localhost:4000/user/registerUser", newUser)
@@ -74,14 +88,15 @@ class Register extends Component {
             password: '',
             confirmedPass: '',
             first_name: '',
-            last_name: ''
+            last_name: '',
+            is_airline: false
         });
 
         this.props.history.push('/');
     }
 
     arePasswordsSame = () => this.state.confirmedPass === this.state.password;
-    areAnyInputsEmpty = () => !!this.state.password && !!this.state.confirmedPass && !!this.state.username && !!this.state.first_name && !!this.state.last_name;
+    areAnyInputsEmpty = () => !!this.state.password && !!this.state.confirmedPass && !!this.state.username && !!this.state.first_name;
 
     render() {
         return (
@@ -89,19 +104,19 @@ class Register extends Component {
                 <h3>Registration</h3>
                 <form onSubmit={this.onSubmit} style={{ marginTop: 20 }}>
                     <div className="form-group">
-                        <label>First Name: </label>
+                        { this.state.is_airline ? <label>Organization Name: </label> : <label>First Name: </label> }
                         <input type="text" 
                                className="form-control" 
                                value={ this.state.first_name } 
                                onChange={ this.onFirstNameChanged } 
                         />
 
-                        <label style={{ marginTop: 5 }}>Last Name: </label>
+                        { !this.state.is_airline && <div><label style={{ marginTop: 5 }}>Last Name: </label>
                         <input type="text" 
                                className="form-control" 
                                value={ this.state.last_name } 
                                onChange={ this.onLastNameChanged } 
-                        />
+                        /></div>}
 
                         <label style={{ marginTop: 5 }}>Username: </label>
                         <input type="text" 
@@ -124,6 +139,9 @@ class Register extends Component {
                                value={ this.state.confirmedPass } 
                                onChange={ this.onConfirmPassChanged } 
                         />
+                        
+                        <input type="checkbox" onChange={this.onRegisterAsAirlineChanged} defaultChecked={this.state.is_airline}/>
+                        <label style={{ marginTop: 20, marginLeft: 5 }}>Register as Airline</label>
                     </div>
                     <div className="form-group">
                         <input type="submit" value="Register" disabled={!this.areAnyInputsEmpty()} className="btn btn-primary"/>

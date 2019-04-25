@@ -9,6 +9,10 @@ import './App.css';
 import FlightsList from "./components/flights-list.component";
 import Register from "./components/register.component";
 import Login from "./components/login.component";
+import CreateFlight from "./components/create-flight.component";
+
+import web3 from "./web3";
+import airlineConsortium from "./airlineConsortium";
 
 class App extends Component {
 
@@ -20,13 +24,14 @@ class App extends Component {
     }
   }
 
-  signIn(username, first_name, last_name, balance, booked_flight) {
+  signIn(username, first_name, last_name, balance, booked_flight, is_airline) {
     this.setState({user: {
       first_name,
       last_name,
       username,
       balance,
-      booked_flight
+      booked_flight,
+      is_airline
     }});
 
     console.log(first_name);
@@ -34,6 +39,7 @@ class App extends Component {
     console.log(last_name);
     console.log(balance);
     console.log(booked_flight);
+    console.log(is_airline);
   }
   
   //Sign out button clicked event
@@ -52,11 +58,28 @@ class App extends Component {
   }
 
   isAuthenticated = () => !!this.state.user;
+  isAirline = () => this.state.user.is_airline;
+
+  transfer = async (flight_cost) => {
+    try {
+      const accounts = await web3.eth.getAccounts();
+      const tx = await airlineConsortium.methods
+        .transfer("0x9E9D31c0af5dbB3D3719b311E3c643D233923EF9", flight_cost)
+        .send({ from: accounts[0] });
+
+      const balance = await airlineConsortium.methods.balanceOf(accounts[0]).call();
+
+    } catch (error) {
+    }
+  };
 
   //This is used as a callback for when an flight is booked
   //so that the current user identity can be updated from
   //the child componenet flights-list
   onFlightBooked(flight_id, flight_cost) {
+
+    this.transfer(flight_cost);
+    /*
     let currentUser = Object.assign({}, this.state.user);
     currentUser.balance -= flight_cost;
     currentUser.booked_flight = flight_id;
@@ -76,8 +99,8 @@ class App extends Component {
         })
         .catch(function(error) {
             console.log(error);
-        });*/
-    });
+        });
+    });*/
 }
 
   render() {
@@ -89,6 +112,9 @@ class App extends Component {
             <ul className="navbar-nav mr-auto">
               { this.isAuthenticated() && <li className="navbar-item">
                 <Link to="/flights" className="nav-link">Flights</Link>
+              </li> }
+              { this.isAuthenticated() && this.isAirline() && <li className="navbar-item">
+                <Link to="/create" className="nav-link">Create Flight</Link>
               </li> }
               { this.isAuthenticated() && <li className="navbar-item">
                 <button className="nav-link nav-button" onClick={() => this.signOut()}>Sign Out</button>
@@ -115,7 +141,8 @@ class App extends Component {
 
         { !this.isAuthenticated() && <Route path="/" exact render={this.LoginPage}/> }
         { !this.isAuthenticated() && <Route path="/register" component={Register}/> }
-        { this.isAuthenticated() && <Route path="/flights" render={(props) => <FlightsList {...props} userData={this.state.user} onFlightBooked={this.onFlightBooked.bind(this)} currentBookedFlightId={this.state.user.booked_flight} />}/> }
+        { this.isAuthenticated() && <Route path="/flights" render={(props) => <FlightsList {...props} userData={this.state.user} onFlightBooked={this.onFlightBooked.bind(this)} />}/> }
+        { this.isAuthenticated() && this.isAirline() && <Route path="/create" render={(props) => <CreateFlight {...props} userData={this.state.user} />} /> }
       </div>
     );
   }

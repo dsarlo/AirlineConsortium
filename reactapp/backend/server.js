@@ -84,7 +84,8 @@ userRoutes.route('/registerUser').post(function(req, res) {
             password: hash,
             balance: user.balance,
             first_name: user.first_name,
-            last_name: user.last_name
+            last_name: user.last_name,
+            is_airline: user.is_airline
         });
 
         User.findOne({username: username}, function(err, lookup) {

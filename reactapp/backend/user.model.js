@@ -19,6 +19,9 @@ let User = new Schema({
     },
     booked_flight: {
         type: String
+    },
+    is_airline: {
+        type: Boolean
     }
 });
 
