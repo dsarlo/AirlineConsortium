@@ -89,6 +89,8 @@ class App extends Component {
         axios.post("http://localhost:4000/user/updateBalance/" + this.state.user.username, this.state.user)
         .then(res => console.log(res.data));
       });
+
+      //TODO update airline balance
     })
     .catch(function(error) {
         console.log(error);
@@ -109,11 +111,14 @@ class App extends Component {
       axios.get('http://localhost:4000/user/airlines/' + originalAirline)
       .then(async originalAirlineData => {//Get the original airline's sc address
         let originalAirlineUser = Object.assign({}, originalAirlineData.data);
+        delete originalAirlineUser._id;
+
         const originalAirlineAddress = originalAirlineData.data.sc_address;
         
         axios.get('http://localhost:4000/user/airlines/' + newFlightAirline)
         .then(async newAirlineData => {//Get the new airline's sc address
           let newAirlineUser = Object.assign({}, newAirlineData.data);
+          delete newAirlineUser._id;
           const newAirlineAddress = newAirlineData.data.sc_address;
           
           const accounts = await web3.eth.getAccounts();
@@ -138,7 +143,8 @@ class App extends Component {
             .then(res => console.log(res.data));
           });
 
-          if(originalAirlineAddress === newAirlineAddress) {
+          //For updating airline balances
+          if(originalAirlineAddress === newAirlineAddress) {//Update airline balance
             const updatedOriginalAirlineBalance = await airlineConsortium.methods.airlineBalances(originalAirlineAddress).call();
 
             //Update airline balance...
@@ -148,7 +154,7 @@ class App extends Component {
             axios.post("http://localhost:4000/user/updateBalance/" + originalAirlineUser.username, originalAirlineUser)
             .then(res => console.log(res.data));
 
-          } else {
+          } else {//Update both airlines balances
             const updatedOriginalAirlineBalance = await airlineConsortium.methods.airlineBalances(originalAirlineAddress).call();
             const updatedNewAirlineBalance = await airlineConsortium.methods.airlineBalances(newAirlineAddress).call();
 
