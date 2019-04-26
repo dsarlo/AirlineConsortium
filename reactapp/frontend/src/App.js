@@ -65,7 +65,7 @@ class App extends Component {
   //the child component flights-list
   onFlightBooked(flight_id, flight_cost, flight_airline) {
 
-    axios.get('http://localhost:4000/airlines/' + flight_airline)
+    axios.get('http://localhost:4000/user/airlines/' + flight_airline)
     .then(async airlineData => {
       const airlineAddress = airlineData.data.sc_address;
 
@@ -106,12 +106,12 @@ class App extends Component {
       let originalAirline = originalFlightLookupResponse.data.flight_airline;
       let originalFlightCost = originalFlightLookupResponse.data.flight_cost;
       
-      axios.get('http://localhost:4000/airlines/' + originalAirline)
+      axios.get('http://localhost:4000/user/airlines/' + originalAirline)
       .then(async originalAirlineData => {//Get the original airline's sc address
         let originalAirlineUser = Object.assign({}, originalAirlineData.data);
         const originalAirlineAddress = originalAirlineData.data.sc_address;
         
-        axios.get('http://localhost:4000/airlines/' + newFlightAirline)
+        axios.get('http://localhost:4000/user/airlines/' + newFlightAirline)
         .then(async newAirlineData => {//Get the new airline's sc address
           let newAirlineUser = Object.assign({}, newAirlineData.data);
           const newAirlineAddress = newAirlineData.data.sc_address;

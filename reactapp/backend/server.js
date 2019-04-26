@@ -143,7 +143,7 @@ userRoutes.route('/login/:user/:pass').get(function(req, res) {
     });
 });
 
-//Get request for AIRLINE LOOKUP at "/user/:organizationName"
+//Get request for AIRLINE LOOKUP at "/user/airlines/:organizationName"
 userRoutes.route('/airlines/:organizationName').get(function(req, res) {
     let organizationName = req.params.organizationName;
     console.log(req.params);

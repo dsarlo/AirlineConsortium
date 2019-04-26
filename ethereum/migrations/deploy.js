@@ -8,7 +8,6 @@ const provider = new Provider(
 );
 
 const web3 = new Web3(provider);
-const INITIAL_SUPPLY = 1000;
 
 (async () => {
   const accounts = await web3.eth.getAccounts();
@@ -16,8 +15,7 @@ const INITIAL_SUPPLY = 1000;
 
   const contract = await new web3.eth.Contract(JSON.parse(interface))
     .deploy({
-      data: "0x" + bytecode,
-      arguments: [INITIAL_SUPPLY]
+      data: "0x" + bytecode
     })
     .send({ from: accounts[0], gas: 1000000 });
   console.log("Contract address:", contract.options.address);

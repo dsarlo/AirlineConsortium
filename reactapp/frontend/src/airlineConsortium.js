@@ -1,6 +1,6 @@
 import web3 from "./web3";
 
-const ADDRESS = "0xd207625e0FFE9AaA23B9484156A748496495D2c2"; //Update with the address at which the contract was deployed!
+const ADDRESS = "0xa932d7CAe693e444aB35A96d81C137a2c0c1295A"; //Update with the address at which the contract was deployed!
 const ABI = [
   {
     "constant": true,
@@ -41,37 +41,90 @@ const ABI = [
     "type": "function"
   },
   {
-    "constant": true,
+    "constant": false,
     "inputs": [
       {
-        "name": "",
+        "name": "originalFlightAirlineAddr",
         "type": "address"
-      }
-    ],
-    "name": "balanceOf",
-    "outputs": [
+      },
       {
-        "name": "",
+        "name": "flightToChangeToAddr",
+        "type": "address"
+      },
+      {
+        "name": "originalFlightCost",
+        "type": "uint256"
+      },
+      {
+        "name": "flightCost",
         "type": "uint256"
       }
     ],
+    "name": "requestFlightChange",
+    "outputs": [
+      
+    ],
     "payable": false,
-    "stateMutability": "view",
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "constant": false,
     "inputs": [
       {
-        "name": "_to",
+        "name": "userAddr",
         "type": "address"
       },
       {
-        "name": "_value",
+        "name": "originalFlightAirlineAddr",
+        "type": "address"
+      },
+      {
+        "name": "flightToChangeToAddr",
+        "type": "address"
+      },
+      {
+        "name": "originalFlightCost",
+        "type": "uint256"
+      },
+      {
+        "name": "flightCost",
         "type": "uint256"
       }
     ],
-    "name": "transfer",
+    "name": "settlePayment",
+    "outputs": [
+      
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "userAddr",
+        "type": "address"
+      },
+      {
+        "name": "originalFlightAirlineAddr",
+        "type": "address"
+      },
+      {
+        "name": "flightToChangeToAddr",
+        "type": "address"
+      },
+      {
+        "name": "originalFlightCost",
+        "type": "uint256"
+      },
+      {
+        "name": "flightCost",
+        "type": "uint256"
+      }
+    ],
+    "name": "responseToFlightChange",
     "outputs": [
       
     ],
@@ -134,17 +187,6 @@ const ABI = [
     "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "name": "initialSupply",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "constructor"
   }
 ];
 
