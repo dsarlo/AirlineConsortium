@@ -67,6 +67,8 @@ class App extends Component {
 
     axios.get('http://localhost:4000/user/airlines/' + flight_airline)
     .then(async airlineData => {
+      let airlineUser = Object.assign({}, airlineData.data);
+      delete airlineUser._id;
       const airlineAddress = airlineData.data.sc_address;
 
       const accounts = await web3.eth.getAccounts();
@@ -90,7 +92,14 @@ class App extends Component {
         .then(res => console.log(res.data));
       });
 
-      //TODO update airline balance
+      const updatedAirlineBalance = await airlineConsortium.methods.airlineBalances(airlineAddress).call();
+
+      //Update airline balance...
+      airlineUser.balance = updatedAirlineBalance;
+
+      //Update airline balance in db
+      axios.post("http://localhost:4000/user/updateBalance/" + airlineUser.username, airlineUser)
+      .then(res => console.log(res.data));
     })
     .catch(function(error) {
         console.log(error);

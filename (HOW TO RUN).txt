@@ -2,13 +2,15 @@
 
 2) Open three terminal windows and head to the folder where you extracted the project files in both instances of terminal.
 
-3) On one instance of terminal, cd into blockchain-project and on the other, cd into blockchain-project-backend.
+3) On one instance of terminal, cd into reactapp/frontend, in another, cd reactapp/backend and the last one, ethereum.
 
-4) In both terminal instances, type npm install (which will install all dependencies) and hit enter.
+4) In all 3 terminal instances, type npm install (which will install all dependencies) and hit enter.
 
-5) After npm install has finished, type nodemon server in the window where you are inside of the blockchain-project-backend folder and hit enter.
+5) After npm install has finished, type npm install -g nodemon
 
-6) In the window where you are inside of the blockchain-project folder, type npm start and hit enter.
+6) Then type nodemon server in the window where you are inside of the backend folder and hit enter.
+
+6) In the window where you are inside of the frontend folder, type npm start and hit enter.
 
 7) Now you will see my site! 
 
