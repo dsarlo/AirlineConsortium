@@ -3,8 +3,8 @@ const Web3 = require("web3");
 const { interface, bytecode } = require("../build/AirlineConsortium");
 
 const provider = new Provider(
-  "cargo jaguar float step gauge sister marine car wire barrel leopard pencil",
-  "https://rinkeby.infura.io/v3/48f1c230054a498d84299c6c3db213fd"
+  "YOUR-METAMASK-SECRET-HERE (Ex: cargo jaguar float step gauge sister, etc)",
+  "https://YOUR-INFURA-LINK-HERE"
 );
 
 const web3 = new Web3(provider);
