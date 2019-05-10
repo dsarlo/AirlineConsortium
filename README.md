@@ -1,4 +1,4 @@
-# AirlineConsortium
+# AirlineConsortium (ETH Blockchain Project)
 ### Step by step install, deploy, and run ASK DAPP
 
 1. The first and most important step… You must be running the old version of metamask since I did not make this compatible with the latest since opera (my default browser) does not have the latest version so please use opera or somehow get the older version before starting!
